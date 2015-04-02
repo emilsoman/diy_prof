@@ -18,15 +18,13 @@ def find_many_squares
 end
 ### End sample program ###
 
-tracer = DiyProf::Tracer.new(DiyProf::DotLogger.new)
-tracer.enable
+DiyProf.start_profiling
 main
-tracer.disable
-puts tracer.result
+result = DiyProf.stop_profiling
 
 require 'tempfile'
 f = Tempfile.open('dot')
-f.write tracer.result
+f.write result
 f.close
 system("dot -Tpdf #{f.path} -o call_graph.pdf && open call_graph.pdf")
 f.unlink
