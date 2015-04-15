@@ -2,19 +2,18 @@ module DiyProf
   class Tracer
     include TimeHelpers
 
-    def initialize
-      @tracepoints = [:call, :return].collect do |event|
-        TracePoint.new(event) do |trace|
-          printf("%-20s:%-20s%-20s\n", cpu_time, event, trace.method_id)
-        end
+    def initialize(clock_type: :cpu)
+      @tracepoint = TracePoint.new(:call, :return) do |trace|
+        time = clock_type == :wall ? wall_time : cpu_time
+        printf("%-20s:%-20s%-20s\n", time, trace.event, trace.method_id)
       end
     end
     def enable
-      @tracepoints.each(&:enable)
+      @tracepoint.enable
     end
 
     def disable
-      @tracepoints.each(&:disable)
+      @tracepoint.disable
     end
   end
 end

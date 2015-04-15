@@ -18,7 +18,7 @@ def find_many_squares
 end
 ### End sample program ###
 
-tracer = DiyProf::Tracer.new
+tracer = DiyProf::Tracer.new(clock_type: :cpu)
 tracer.enable
 main
 tracer.disable
