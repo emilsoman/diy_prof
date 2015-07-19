@@ -2,11 +2,11 @@ module DiyProf
   class Tracer
     include TimeHelpers
 
-    def initialize(logger)
-      @logger = logger
+    def initialize(reporter)
+      @reporter = reporter
       @tracepoints = [:call, :return].collect do |event|
         TracePoint.new(event) do |trace|
-          logger.log(event, trace.method_id, cpu_time)
+          reporter.record(event, trace.method_id, cpu_time)
         end
       end
     end
@@ -19,7 +19,7 @@ module DiyProf
     end
 
     def result
-      @logger.result
+      @reporter.result
     end
   end
 end

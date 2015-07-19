@@ -3,7 +3,7 @@ module DiyProf
   CallInfo = Struct.new(:name, :time)
   MethodInfo = Struct.new(:count, :total_time, :self_time)
 
-  class DotLogger
+  class DotReporter
     def initialize
       # A stack for pushing/popping methods when methods get called/returned
       @call_stack = []
@@ -13,7 +13,7 @@ module DiyProf
       @calls = {}
     end
 
-    def log(event, method_name, time)
+    def record(event, method_name, time)
       case event
       when :call
         @call_stack << CallInfo.new(method_name, time)
