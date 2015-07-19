@@ -1,7 +1,7 @@
 module DiyProf
 
   CallInfo = Struct.new(:name, :time)
-  MethodInfo = Struct.new(:time, :count)
+  MethodInfo = Struct.new(:count, :total_time, :self_time)
 
   class DotLogger
     def initialize
@@ -36,9 +36,10 @@ module DiyProf
 
     def add_method_to_call_tree(method)
       # Add method as a node to the call graph
-      @methods[method.name] ||= MethodInfo.new(0, 0)
+      @methods[method.name] ||= MethodInfo.new(0, 0, 0)
       # Update total time spent inside the method
-      @methods[method.name].time += method.time
+      @methods[method.name].total_time += method.time
+      @methods[method.name].self_time += method.time
       # Update total no of times the method was called
       @methods[method.name].count += 1
 
@@ -47,8 +48,11 @@ module DiyProf
       if parent = @call_stack.last
         @calls[parent.name] ||= {}
         @calls[parent.name][method.name] ||= 0
-
         @calls[parent.name][method.name] += 1
+
+        # Take away self_time of parent
+        @methods[parent.name] ||= MethodInfo.new(0, 0, 0)
+        @methods[parent.name].self_time -= method.time
       end
     end
 
@@ -64,7 +68,7 @@ module DiyProf
     def graph_nodes
       nodes = ""
       @methods.each do |name, method_info|
-        nodes << "#{name} [label=\"#{name}\\ncalls: #{method_info.count}\\ntime: #{method_info.time}\"];\n"
+        nodes << "#{name} [label=\"#{name}\\ncalls: #{method_info.count}\\ntotal time: #{method_info.total_time}\\nself time: #{method_info.self_time}\"];\n"
       end
       nodes
     end
