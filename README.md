@@ -77,6 +77,15 @@ DiyProf.stop_and_output(dir: 'tmp', format: :pdf)
 ```
 
 
+### Source filtering
+
+You can limit which source files go into the graph by using the `source_filter` argument for `start_profiling`:
+
+```ruby
+# 
+DiyProf.start_profiling(source_filter: %r(lib/interesting/module))
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `bin/console` for an interactive prompt that will allow you to experiment.
