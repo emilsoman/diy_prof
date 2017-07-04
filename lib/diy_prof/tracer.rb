@@ -33,7 +33,6 @@ module DiyProf
     end
 
     def should_record?(location)
-      puts "SOURCE: #{location}"
       location.match @source_filter || //
     end
   end
