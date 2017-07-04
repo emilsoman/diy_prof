@@ -1,10 +1,18 @@
 # DiyProf
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/diy_prof`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+DiyProf is a very simple call graph visualiser for Ruby.
 
 ## Installation
+
+DiyProf uses `dot` format to record the call graph.
+
+
+If you want DiyProf to produce PDF files, please install [GraphViz](http://www.graphviz.org) beforehand. E.g. on macOS:
+
+```bash
+brew install graphviz
+```
+
 
 Add this line to your application's Gemfile:
 
@@ -22,7 +30,52 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+def method1
+  method2
+end
+
+def method2
+  puts "in method2"
+end
+
+DiyProf.start_profiling
+method1
+pdf = DiyProf.stop_and_output
+system("open #{pdf}")
+```
+
+This opens a PDF similar to this:
+
+![Example PDF](examples/example.png)
+
+
+See [demo.rb](examples/demo.rb) for full example.
+
+
+### Without GraphViz
+
+If you do not wan't to or can't install GraphViz, you can just get the `dot` format and use it as you see fit:
+ 
+```ruby
+DiyProf.start_profiling
+method1
+result = DiyProf.stop_profiling
+```
+
+### Ruby on Rails
+
+With Ruby on Rails it might not be possible to automatically open the PDF as in the example. In such case the `stop_and_output` takes a directory name that the PDF will be placed in and the intended usage is:
+
+```ruby
+DiyProf.start_profiling
+
+# do some stuff here
+
+# Place PDF to Rails' tmp/ directory
+DiyProf.stop_and_output(dir: 'tmp')
+```
+
 
 ## Development
 

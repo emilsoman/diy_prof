@@ -20,11 +20,7 @@ end
 
 DiyProf.start_profiling
 main
-result = DiyProf.stop_profiling
+pdf = DiyProf.stop_and_output
+system("open #{pdf}")
 
-require 'tempfile'
-f = Tempfile.open('dot')
-f.write result
-f.close
-system("dot -Tpdf #{f.path} -o call_graph.pdf && open call_graph.pdf")
-f.unlink
+
