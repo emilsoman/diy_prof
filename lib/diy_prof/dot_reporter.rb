@@ -68,7 +68,7 @@ module DiyProf
     def graph_nodes
       nodes = ""
       @methods.each do |name, method_info|
-        nodes << "#{name} [label=\"#{name}\\ncalls: #{method_info.count}\\ntotal time: #{method_info.total_time}\\nself time: #{method_info.self_time}\"];\n"
+        nodes << "\"#{name}\" [label=\"#{name}\\ncalls: #{method_info.count}\\ntotal time: #{method_info.total_time}\\nself time: #{method_info.self_time}\"];\n"
       end
       nodes
     end
@@ -77,7 +77,7 @@ module DiyProf
       links = ""
       @calls.each do |parent, children|
         children.each do |child, count|
-          links << "#{parent} -> #{child} [label=\" #{count}\"];\n"
+          links << "\"#{parent}\" -> \"#{child}\" [label=\" #{count}\"];\n"
         end
       end
       links
