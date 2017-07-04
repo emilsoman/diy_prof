@@ -2,7 +2,8 @@ module DiyProf
   class Tracer
     include TimeHelpers
 
-    def initialize(reporter)
+    def initialize(reporter, source_filter: nil)
+      @source_filter = source_filter
       @reporter = reporter
       @tracepoints = [:call, :return].collect do |event|
         TracePoint.new(event) do |trace|
@@ -15,7 +16,7 @@ module DiyProf
             trace.defined_class.to_s.sub(/#<Class:(.*)>/,'\1.')
           end
           method_name = "#{prefix}#{trace.method_id}"
-          reporter.record(event, method_name, cpu_time)
+          reporter.record(event, method_name, cpu_time) if should_record?(trace.path)
         end
       end
     end
@@ -29,6 +30,11 @@ module DiyProf
 
     def result
       @reporter.result
+    end
+
+    def should_record?(location)
+      puts "SOURCE: #{location}"
+      location.match @source_filter || //
     end
   end
 end
