@@ -15,15 +15,27 @@ module DiyProf
     @tracer.result
   end
 
-  def self.stop_and_output(dir: nil)
+  def self.stop_and_output(dir: nil, format: :dot)
     result = self.stop_profiling
     dir ||= Dir.tmpdir
-    f = Tempfile.open('dot')
-    f.write result
-    f.close
-    filename = Time.now.strftime('diy_prof-%Y%m%d-%H%M%S.pdf')
+    filename = Time.now.strftime("diy_prof-%Y%m%d-%H%M%S.#{format}")
     filepath = File.join(dir, filename)
-    cmd = "dot -Tpdf #{f.path} -o #{filepath}"
+
+    case format
+    when :pdf
+      output_pdf(filepath, result)
+    else
+      # any other format name we just output the dot source
+      output_dot(filepath, result)
+    end
+    filepath
+  end
+
+  def self.output_pdf(filepath, data)
+    f = Tempfile.open('dot')
+    f.write data
+    f.close
+    cmd     = "dot -Tpdf #{f.path} -o #{filepath}"
     success = system(cmd)
     unless success
       filepath.sub!(/\.pdf/, '.txt')
@@ -38,6 +50,12 @@ module DiyProf
       end
     end
     f.unlink
-    filepath
+  end
+
+
+  def self.output_dot(filepath, data)
+    File.open(filepath, 'w') do |f|
+      f.puts data
+    end
   end
 end

@@ -20,7 +20,7 @@ end
 
 DiyProf.start_profiling
 main
-pdf = DiyProf.stop_and_output
+pdf = DiyProf.stop_and_output(format: :pdf, dir: '.')
 system("open #{pdf}")
 
 

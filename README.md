@@ -41,7 +41,7 @@ end
 
 DiyProf.start_profiling
 method1
-pdf = DiyProf.stop_and_output
+pdf = DiyProf.stop_and_output(format: :pdf)
 system("open #{pdf}")
 ```
 
@@ -60,12 +60,12 @@ If you do not wan't to or can't install GraphViz, you can just get the `dot` for
 ```ruby
 DiyProf.start_profiling
 method1
-result = DiyProf.stop_profiling
+dot_file = DiyProf.stop_and_output  # default format is :dot
 ```
 
 ### Ruby on Rails
 
-With Ruby on Rails it might not be possible to automatically open the PDF as in the example. In such case the `stop_and_output` takes a directory name that the PDF will be placed in and the intended usage is:
+With Ruby on Rails (or any bigger project for that matter) it might not be possible to automatically open the PDF as in the example. In such case the `stop_and_output` takes a directory name that the file will be placed in and the intended usage is:
 
 ```ruby
 DiyProf.start_profiling
@@ -73,7 +73,7 @@ DiyProf.start_profiling
 # do some stuff here
 
 # Place PDF to Rails' tmp/ directory
-DiyProf.stop_and_output(dir: 'tmp')
+DiyProf.stop_and_output(dir: 'tmp', format: :pdf)
 ```
 
 
